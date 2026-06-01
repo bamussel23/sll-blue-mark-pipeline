@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pre-Pour QA Checklist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f1f5f9; -webkit-tap-highlight-color: transparent; }
+        .canvas-container { border: 2px dashed #cbd5e1; border-radius: 8px; background: white; touch-action: none; }
+        input[type="checkbox"] { width: 1.5rem; height: 1.5rem; border-radius: 0.25rem; accent-color: #0f172a; }
+    </style>
+</head>
+<body class="text-slate-800 pb-20">
+
+    <!-- App Header -->
+    <header class="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-10 flex justify-between items-center">
+        <div>
+            <h1 class="text-lg font-bold">QA Pre-Pour Inspection</h1>
+            <p class="text-xs text-slate-400">Digital Floor Operations</p>
+        </div>
+        <div class="bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded">LIVE</div>
+    </header>
+
+    <main class="p-4 max-w-md mx-auto">
+        <!-- Job Metadata -->
+        <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-4">
+            <h2 class="text-sm font-bold text-slate-500 uppercase mb-3">Piece Metadata</h2>
+            
+            <div class="mb-3">
+                <label class="block text-sm font-medium mb-1">Job Number</label>
+                <input type="text" placeholder="e.g. 26-1042" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+            </div>
+            
+            <div class="mb-3">
+                <label class="block text-sm font-medium mb-1">Piece Mark</label>
+                <input type="text" placeholder="e.g. W-14A" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Pour Bed / Location</label>
+                <select class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-lg focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    <option>Bed 01 (Flat Slab)</option>
+                    <option>Bed 14 (Wall)</option>
+                    <option>Bed 22 (Double Tee)</option>
+                    <option>Custom Form</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Engineering Tolerances -->
+        <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-4">
+            <h2 class="text-sm font-bold text-slate-500 uppercase mb-3">Engineering Tolerances</h2>
+            
+            <div class="flex items-center space-x-3 mb-4 p-2 hover:bg-slate-50 rounded-lg">
+                <input type="checkbox" id="chk1">
+                <label for="chk1" class="text-base font-medium leading-tight">Formwork dimensions match shop drawings (± 1/4")</label>
+            </div>
+            
+            <div class="flex items-center space-x-3 mb-4 p-2 hover:bg-slate-50 rounded-lg">
+                <input type="checkbox" id="chk2">
+                <label for="chk2" class="text-base font-medium leading-tight">Rebar coverage and clearances verified</label>
+            </div>
+
+            <div class="flex items-center space-x-3 mb-4 p-2 hover:bg-slate-50 rounded-lg">
+                <input type="checkbox" id="chk3">
+                <label for="chk3" class="text-base font-medium leading-tight">Embed plates positioned and securely tied</label>
+            </div>
+
+            <div class="flex items-center space-x-3 mb-4 p-2 hover:bg-slate-50 rounded-lg">
+                <input type="checkbox" id="chk4">
+                <label for="chk4" class="text-base font-medium leading-tight">Lifting inserts verified (capacity/location)</label>
+            </div>
+
+            <div class="flex items-center space-x-3 p-2 hover:bg-slate-50 rounded-lg">
+                <input type="checkbox" id="chk5">
+                <label for="chk5" class="text-base font-medium leading-tight">Blockouts and voids free of debris</label>
+            </div>
+        </section>
+
+        <!-- Signature Pad -->
+        <section class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 mb-4">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-sm font-bold text-slate-500 uppercase">Inspector Signature</h2>
+                <button id="clearBtn" class="text-xs text-red-500 font-bold px-2 py-1 bg-red-50 rounded">CLEAR</button>
+            </div>
+            <div class="canvas-container w-full h-32 relative">
+                <canvas id="sigCanvas" class="w-full h-full absolute inset-0"></canvas>
+            </div>
+            <p class="text-xs text-slate-400 mt-2 text-center">By signing, I verify this piece is cleared for pour.</p>
+        </section>
+
+        <!-- Submit -->
+        <button class="w-full bg-slate-900 text-white font-bold text-lg p-4 rounded-xl shadow-lg active:bg-slate-800 transition-colors flex justify-center items-center gap-2" onclick="submitForm()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Submit to Database
+        </button>
+    </main>
+
+    <!-- Success Toast (Hidden) -->
+    <div id="toast" class="fixed bottom-4 left-4 right-4 bg-emerald-600 text-white p-4 rounded-xl shadow-2xl transform translate-y-24 transition-transform duration-300 flex items-center gap-3 z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <div>
+            <div class="font-bold text-sm">Clearance Logged</div>
+            <div class="text-xs opacity-90">Synced to SharePoint / Database</div>
+        </div>
+    </div>
+
+    <script>
+        // Signature Canvas Logic
+        const canvas = document.getElementById('sigCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+
+        // Resize canvas to physical pixels
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function startDrawing(e) {
+            isDrawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const rect = canvas.getBoundingClientRect();
+            let x, y;
+            
+            if (e.type.includes('touch')) {
+                x = e.touches[0].clientX - rect.left;
+                y = e.touches[0].clientY - rect.top;
+            } else {
+                x = e.clientX - rect.left;
+                y = e.clientY - rect.top;
+            }
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        // Mouse Events
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch Events
+        canvas.addEventListener('touchstart', startDrawing, {passive: false});
+        canvas.addEventListener('touchmove', draw, {passive: false});
+        canvas.addEventListener('touchend', stopDrawing);
+
+        // Clear Canvas
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+        });
+
+        // Submit Mock
+        function submitForm() {
+            const toast = document.getElementById('toast');
+            toast.style.transform = 'translateY(0)';
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateY(150%)';
+                // Reset form
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('input[type="text"]').forEach(inp => input.value = '');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
