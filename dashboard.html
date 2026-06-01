@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stresscon QA | Blue Mark Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); padding: 20px; margin-bottom: 20px; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #1e293b; }
+        .stat-label { font-size: 0.875rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+        .trend-up { color: #ef4444; }
+        .trend-down { color: #22c55e; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="mb-8">
+        <h1 class="text-2xl font-bold text-slate-800">QA Defect Trends</h1>
+        <p class="text-slate-500">Blue Mark Database Analysis (Trailing 12 Months)</p>
+    </header>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="card p-4">
+            <div class="stat-label">Total Reports</div>
+            <div class="stat-value">544+</div>
+            <div class="text-xs text-slate-400 mt-1">Migrated from Excel</div>
+        </div>
+        <div class="card p-4">
+            <div class="stat-label">Avg Resolution</div>
+            <div class="stat-value">2.4<span class="text-lg text-slate-500">d</span></div>
+            <div class="text-xs trend-down mt-1">↓ 18% vs Last Qtr</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="text-lg font-semibold text-slate-800 mb-4">Defect Frequency by Type</h2>
+        <div class="relative h-64">
+            <canvas id="defectChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="text-lg font-semibold text-slate-800 mb-4">High-Risk Pour Beds</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-200">
+                        <th class="py-2 text-sm text-slate-500 font-medium">Bed ID</th>
+                        <th class="py-2 text-sm text-slate-500 font-medium">Defect Rate</th>
+                        <th class="py-2 text-sm text-slate-500 font-medium">Trend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3 text-slate-800 font-medium">Bed 14 (Wall)</td>
+                        <td class="py-3 text-slate-800">12.4%</td>
+                        <td class="py-3 trend-up text-sm font-bold">↑ Rising</td>
+                    </tr>
+                    <tr class="border-b border-slate-100">
+                        <td class="py-3 text-slate-800 font-medium">Bed 02 (Double Tee)</td>
+                        <td class="py-3 text-slate-800">8.1%</td>
+                        <td class="py-3 text-slate-400 text-sm font-bold">- Stable</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 text-slate-800 font-medium">Bed 09 (Flat Slab)</td>
+                        <td class="py-3 text-slate-800">4.2%</td>
+                        <td class="py-3 trend-down text-sm font-bold">↓ Dropping</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('defectChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Spalling', 'Exposed Rebar', 'Dimensional', 'Honeycombing', 'Cracking'],
+                datasets: [{
+                    label: 'Incidents (YTD)',
+                    data: [142, 85, 64, 43, 28],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, grid: { display: false } },
+                    x: { grid: { display: false } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+</body>
+</html>
